@@ -1,4 +1,4 @@
-// Current strat
+// Current strat COUCOU ENZO
 global strategy = 0;
 // On prend le gun
 global pistolSet = false;
