@@ -1,0 +1,59 @@
+// Current strat
+global strategy = 0;
+// On prend le gun
+global pistolSet = false;
+global startingLife = getLife();
+global turn = 0;
+if(!pistolSet) { setWeapon(WEAPON_MAGNUM); }
+pistolSet = true;
+
+// Données de base
+var enemy = getNearestEnemy();
+var startDistance = getCellDistance(getCell(), getCell(enemy));
+
+if(getForce(enemy) > 100) { strategy = 1; }
+
+global first = true;
+global helmetCoolDown = 20;
+if(getLife() < startingLife || (first && startDistance < 16))
+{
+  first = false;
+  if(useChip(CHIP_HELMET, getLeek()) == USE_SUCCESS)
+  {
+    useChip(CHIP_CURE, getLeek());
+    helmetCoolDown = 4;
+  }
+}
+
+// On avance vers l'ennemi, pas à pas
+if(strategy == 0) {
+  while(getMP() > 0 && getCellDistance(getCell(), getCell(enemy)) > 8) { moveToward(enemy, 1); }
+  var distToCenter =  getCellDistance(getCell(), getCellFromXY(0,0));
+  debug("distToCenter" + distToCenter);
+  var isInCorner = (distToCenter == 17);
+  if(isInCorner || getCellDistance(getCell(), getCell(enemy)) < 5 || turn > 20) { strategy = 1; debug("Changed strategy"); }
+}
+if(strategy == 1) {
+  moveToward(enemy);
+}
+
+if(helmetCoolDown == 0) { useChip(CHIP_STRETCHING, getLeek()); }
+if(getTP() > 7) { useChip(CHIP_PROTEIN, getLeek());}
+if(getTP() > 7 && getCellDistance(getCell(), getCell(enemy)) < 5)
+{
+  var enemyCell = getCell(enemy);
+  var myCell = getCell();
+  if(getCellX(myCell) == getCellX(enemyCell) || getCellY(myCell) == getCellY(enemyCell))
+  { setWeapon(WEAPON_SHOTGUN); }
+}
+while(useWeapon(enemy) == USE_SUCCESS) {}
+
+while(isAlive(enemy) && useChip(CHIP_SPARK, enemy) == USE_SUCCESS) {}
+while(getLife() < startingLife && useChip(CHIP_BANDAGE, getLeek()) == USE_SUCCESS) {}
+while(isAlive(enemy) && useChip(CHIP_SHOCK, enemy) == USE_SUCCESS) {}
+while(isAlive(enemy) && useChip(CHIP_LEATHER_BOOTS, getLeek()) == USE_SUCCESS) {}
+while(isAlive(enemy) && useChip(CHIP_STRETCHING, getLeek()) == USE_SUCCESS) {}
+
+if(strategy == 0) { moveAwayFrom(enemy); }
+turn++;
+helmetCoolDown--;
