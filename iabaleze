@@ -1,0 +1,20 @@
+global cornerCells = [];
+cornerCells[0] = 0;
+cornerCells[1] = 595;
+cornerCells[2] = 612;
+cornerCells[3] = 17;
+global currentDirection = 0;
+for (var i = 0; i < 4; i++) {
+	if (getCellDistance(getCell(), cornerCells[currentDirection]) <= 5){}
+}
+while (getMP() > 0) {
+	//On vérifie si on est déjà près d'une des cellules
+	if (getCellDistance(getCell(), cornerCells[currentDirection]) <= 5) {
+		currentDirection++;
+		currentDirection = (currentDirection == 4) ? 0 : currentDirection;
+
+	}
+	moveTowardCell(cornerCells[currentDirection], 1);
+
+
+}
