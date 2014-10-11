@@ -53,7 +53,6 @@ function cellToTargetChip(enemy, chip) {
 
 // Code par tour
 if (startDistance < 17) { useChip(CHIP_PROTEIN, getLeek()); }
-if (startDistance < 14) { useChip(CHIP_STEROID, getLeek()); }
 if (startDistance < 14 && getLife(enemy) >= 150 && strategy == 0) { useChip(CHIP_FORTRESS, getLeek());}
 
 if (getTurn() == 0 && strategy == 0) {
@@ -68,7 +67,7 @@ var path = getPath(getCell(getLeek()), getCell(enemy), enemy);
 var pathLength = getPathLength(getCell(getLeek()), getCell(enemy), enemy);
 var found = false;
 for (i = 0; i <= 4; i++) {
-   if (!found && lineOfSight(getCell(path[i], getCell(enemy) && (pathLength - i) <= 7)
+   if (!found && lineOfSight(path[i], getCell(enemy)) && (pathLength - i) <= 7)
    {
       found = true;
       moveToward(enemy, i);
@@ -76,7 +75,7 @@ for (i = 0; i <= 4; i++) {
    }
 }
 
-while (getEDistance(enemy) < 4) { moveAwayFrom(enemy, 1); }
+while (getEDistance(enemy) < 5) { moveAwayFrom(enemy, 1); }
 
 //On tire sur l'ennemi
 
@@ -94,7 +93,7 @@ if (getTP() >= 6) {
 	}
 }
 //On s'éloigne de l'ennemi vers un coin
-
+if (startDistance < 14) { useChip(CHIP_STEROID, getLeek()); }
 useChip(CHIP_CURE, getLeek());
 useChip(CHIP_HELMET, getLeek());
 useChip(CHIP_WALL, getLeek());
