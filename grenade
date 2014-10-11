@@ -1,0 +1,95 @@
+var startDistance = getCellDistance(getCell(), getCell(enemy));
+// D'abord, on équipe le grenade launcher
+global pistoletEquipe = false;
+if (pistoletEquipe == false) {
+	setWeapon(WEAPON_GRENADE_LAUNCHER); // Attention : coûte 1 PT
+	pistoletEquipe = true;
+}
+
+// Variables utiles
+var enemy = getNearestEnemy();
+var startDistance = getCellDistance(getCell(), getCell(enemy));
+global cornerCells = [];
+cornerCells[0] = 0;
+cornerCells[1] = 595;
+cornerCells[2] = 612;
+cornerCells[3] = 17;
+global currentDirection = 0;
+global firstHelmet = true;
+
+// Fonctions utiles
+function getEDistance(enemy) {
+	return getCellDistance(getCell(getLeek()), getCell(enemy));
+}
+
+function canUseGrenade(enemy) {
+	return lineOfSight(getCell(getLeek()), getCell(enemy));
+}
+
+function cellToTarget(enemy) {
+	var enemyCell = getCell(enemy);
+	var enemyX = getCellX(enemyCell);
+	var enemyY = getCellY(enemyCell);
+	for (var dx = -2; dx < 3; dx++) {
+		for (var dy = -2; dy < 3; dy++) {
+			var currentCell = getCellFromXY(enemyX + dx, enemyY + dy);
+			if (currentCell != null && canUseWeaponOnCell(currentCell) && (abs(dx) + abs(dy)) <= 2) {
+				return currentCell;
+			}
+		}
+	}
+}
+
+function cellToTargetChip(enemy) {
+	var enemyCell = getCell(enemy);
+	var enemyX = getCellX(enemyCell);
+	var enemyY = getCellY(enemyCell);
+	for (var dx = -2; dx < 3; dx++) {
+		for (var dy = -2; dy < 3; dy++) {
+			var currentCell = getCellFromXY(enemyX + dx, enemyY + dy);
+			if (currentCell != null && canUseChipOnCell(CHIP_LIGHTNING, currentCell) && (abs(dx) + abs(dy)) <= 2) {
+				return currentCell;
+			}
+		}
+	}
+}
+// Code par tour
+if (getTurn() == 0) {
+	while (isAlive(enemy) && useChip(CHIP_STRETCHING, getLeek()) == USE_SUCCESS) {}
+	while (isAlive(enemy) && useChip(CHIP_PROTEIN, getLeek()) == USE_SUCCESS) {}
+}
+while (getLife(enemy) > 30 && useChip(CHIP_FORTRESS, getLeek()) == USE_SUCCESS) {}
+if ((firstHelmet && startDistance < 16)) {
+	firstHelmet = false;
+	if (useChip(CHIP_HELMET, getLeek()) == USE_SUCCESS) {
+		if (useChip(CHIP_WALL, getLeek()) != USE_SUCCESS) {}
+	}
+	//TODO consider healing
+}
+
+while (getEDistance(enemy) >= 7 && getMP() > 0) {
+	moveToward(enemy, 1);
+}
+if (getEDistance(enemy) <= 3) {
+	moveAwayFrom(enemy);
+}
+//On tire sur l'ennemi
+if (getTP() >= 6 && canUseChipOnCell(CHIP_STALACTITE, getCell(enemy))) {
+	useChip(CHIP_STALACTITE, enemy);
+}
+
+var cellToTargetChipEnemy = cellToTargetChip(enemy);
+while (cellToTargetChipEnemy != null && getTP() >= 4)
+{useChipOnCell(CHIP_LIGHTNING, cellToTargetChipEnemy);}
+if (getTP() >= 6) {
+	while (useWeaponOnCell(cellToTarget(enemy)) != USE_SUCCESS && getMP() > 0) {
+		moveToward(enemy, 1);
+	}
+}
+//On s'éloigne de l'ennemi vers un coin
+
+
+while (isAlive(enemy) && useChip(CHIP_CURE, getLeek()) == USE_SUCCESS) {}
+while (isAlive(enemy) && useChip(CHIP_BANDAGE, getLeek()) == USE_SUCCESS) {}
+while (isAlive(enemy) && useChip(CHIP_HELMET, getLeek()) == USE_SUCCESS) {}
+while (isAlive(enemy) && useChip(CHIP_WALL, getLeek()) == USE_SUCCESS) {}
