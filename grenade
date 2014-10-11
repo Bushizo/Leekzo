@@ -64,7 +64,17 @@ if (getTurn() == 0 && strategy == 0) {
 }
 
 //On se place
-while (getEDistance(enemy) >= 7 && getMP() > 0) { moveToward(enemy, 1); }
+var path = getPath(getCell(getLeek()), getCell(enemy), enemy);
+var pathLength = getPathLength(getCell(getLeek()), getCell(enemy), enemy);
+var found = false;
+for (i = 0; i <= 4; i++) {
+   if (!found && lineOfSight(getCell(path[i], getCell(enemy) && (pathLength - i) <= 7)
+   {
+      found = true;
+      moveToward(enemy, i);
+      break;
+   }
+}
 
 while (getEDistance(enemy) < 4) { moveAwayFrom(enemy, 1); }
 
