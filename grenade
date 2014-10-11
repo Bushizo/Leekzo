@@ -1,4 +1,3 @@
-var startDistance = getCellDistance(getCell(), getCell(enemy));
 // D'abord, on équipe le grenade launcher
 global pistoletEquipe = false;
 if (pistoletEquipe == false) {
@@ -51,15 +50,11 @@ function cellToTargetChip(enemy, chip) {
 		}
 	}
 }
-// Code par tour
-if (startDistance < 17) {
-	while (isAlive(enemy) && useChip(CHIP_PROTEIN, getLeek()) == USE_SUCCESS) {}
-}
 
-if (startDistance < 14) {
-	while (isAlive(enemy) && useChip(CHIP_STEROID, getLeek()) == USE_SUCCESS) {}
-}
-while (startDistance < 14 && getLife(enemy) >= 150 && strategy == 0) { useChip(CHIP_FORTRESS, getLeek());}
+// Code par tour
+if (startDistance < 17) { useChip(CHIP_PROTEIN, getLeek()); }
+if (startDistance < 14) { useChip(CHIP_STEROID, getLeek()); }
+if (startDistance < 14 && getLife(enemy) >= 150 && strategy == 0) { useChip(CHIP_FORTRESS, getLeek());}
 
 if (getTurn() == 0 && strategy == 0) {
 	firstHelmet = false;
@@ -90,7 +85,6 @@ if (getTP() >= 6) {
 }
 //On s'éloigne de l'ennemi vers un coin
 
-
-while (isAlive(enemy) && useChip(CHIP_CURE, getLeek()) == USE_SUCCESS) {}
-while (isAlive(enemy) && useChip(CHIP_HELMET, getLeek()) == USE_SUCCESS) {}
-while (isAlive(enemy) && useChip(CHIP_WALL, getLeek()) == USE_SUCCESS) {}
+useChip(CHIP_CURE, getLeek());
+useChip(CHIP_HELMET, getLeek());
+useChip(CHIP_WALL, getLeek());
